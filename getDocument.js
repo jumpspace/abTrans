@@ -3,7 +3,7 @@ const fs = require('fs/promises');
 
 const BASEURL = "https://api.maximizer.com/octopus";
 const CONTENT_TYPE = "application/json; charset=utf-8";
-const TARGET_PAT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteHBkb2UwbDF4eTVnZDU5dHp5ZCIsIm14LXdzaWQiOiJDMDdEMzI5Qi1GODJDLTQ3Q0UtOUU1QS1DMDRCMkUzRjNCNTciLCJleHAiOjE3NTIwMTkyMDB9.UDzP73kPNEU8Q62itDox9zfeJdZA0bAerb1RbjkBK_o";
+const TARGET_PAT = "0123456789abcdefghijklmnopqrstuvwxyz";
 const TARGET_AUTH = `Bearer ${TARGET_PAT}`;
 const TARGET_METHOD = `${BASEURL}/Read`;
 
@@ -57,4 +57,4 @@ async function getDocument(objectKey) {
     }
 }
 
-getDocument('QWJFbnRyeQkyMTExMjQyNTAwMjU1Nzg5NTI1OTlDCTA=').then((documentList) => { console.log(documentList); });
+getDocument('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ=').then((documentList) => { console.log(documentList); });

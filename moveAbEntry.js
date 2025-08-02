@@ -10,32 +10,6 @@ const TARGET_AUTH = `Bearer ${TARGET_PAT}`;
 const SOURCE_METHOD = `${BASEURL}/Read`;
 const TARGET_METHOD = `${BASEURL}/Create`;
 
-/*
-const sourceConnectOptions = {
-    method: 'POST', 
-    redirect: 'follow', 
-    headers: { 'Authorization': SOURCE_AUTH, 'Content-Type': CONTENT_TYPE }, 
-    body: JSON.stringify(srcRequest) 
-};
-
-const targetConnectOptions = {
-    method: 'POST', 
-    redirect: 'follow', 
-    headers: { 'Authorization': TARGET_AUTH, 'Content-Type': CONTENT_TYPE }, 
-    body: JSON.stringify(dstRequest) 
-
-    fetch(SOURCE_METHOD, sourceConnectOptions)
-  .then((response) => response.json())
-  .then((abRec) => console.log(abRec))
-  .catch((error) => console.log("Error: " + error));
-
-  fetch(TARGET_METHOD, targetConnectOptions)
-    .then((response) => response.json())
-    .then((abRec) => console.log(abRec))
-    .catch((error) => console.log("Error: " + error));
-};
-*/
-
 function buildSearchRequest(abEntry) {
     abEntry.Compatibility = {};
     abEntry.Compatibility.AbEntryKey = "2.0"
@@ -53,38 +27,38 @@ function buildSearchRequest(abEntry) {
 }
 
 async function getUdfList(abEntry) {
-    udfList = { 
-        "Schema": { 
-            "Criteria": { 
-                "SearchQuery": { 
-                    "$AND": [{ 
-                        "Key": { 
-                            "$TREE": "/AbEntry/Udf" 
+    const udfList = {
+        "Schema": {
+            "Criteria": {
+                "SearchQuery": {
+                    "$AND": [{
+                        "Key": {
+                            "$TREE": "/AbEntry/Udf"
                         }
-                    }, 
-                    { 
-                        "AppliesTo": { 
+                    },
+                    {
+                        "AppliesTo": {
                             "$IN": [ "Company", "Individual" ]
                         }
                     }]
                 }
-            }, 
-            "Scope": { 
-                "Fields": { 
-                    "Key": 1 
+            },
+            "Scope": {
+                "Fields": {
+                    "Key": 1
                 }
             }
-        }, 
-        "Compatibility": { 
-            "SchemaObject": "1.0" 
+        },
+        "Compatibility": {
+            "SchemaObject": "1.0"
         }
     };
-    
+
     const udfListConnectOptions = {
-        method: 'POST', 
-        redirect: 'follow', 
-        headers: { 'Authorization': TARGET_AUTH, 'Content-Type': CONTENT_TYPE }, 
-        body: JSON.stringify(udfList) 
+        method: 'POST',
+        redirect: 'follow',
+        headers: { 'Authorization': TARGET_AUTH, 'Content-Type': CONTENT_TYPE },
+        body: JSON.stringify(udfList)
     };
 
     let resList = [];
@@ -103,10 +77,10 @@ async function getUdfList(abEntry) {
             });
 
             fieldList.forEach((fieldName) => { abEntry.AbEntry.Scope.Fields[fieldName] = 1; });
-        
+
             return abEntry;
         } else { console.log("<getUdfs/Response> " + res.Msg[0]); }
-    } 
+    }
     catch (error) {
         console.error("<getUdfs/Fetch> Error: " + error)
     }
@@ -114,4 +88,4 @@ async function getUdfList(abEntry) {
 
 let abEntry = {};
 buildSearchRequest(abEntry);
-getUdfList(abEntry).then()
+getUdfList(abEntry).then(console.log(abEntry));
