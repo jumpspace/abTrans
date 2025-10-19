@@ -1,0 +1,5 @@
+const personalaccesstoken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteHB2bDhzZmU0cnpibG8zbDJpaCIsImlhdCI6MTc2MDMxMzIxMywiZXhwIjoxNzkxNzYzMjAwLCJteC1jaWQiOiJCMzI2Rjc4My0xMUNELTQwOTMtODNFQy0xRkNDNDE5ODdGODAiLCJteC13c2lkIjoiQzA3RDMyOUItRjgyQy00N0NFLTlFNUEtQzA0QjJFM0YzQjU3IiwibXgtZGIiOiJTdXBwb3J0IiwibXgtdWlkIjoiUFdPTiIsIm14LXBsIjoiY2xvdWQifQ.eu3gnxhALHzPgSFQ-pX2y-3jVYFCblA1NnF2SzSlOM0"; // Enter your Maximizer Personal Access Token here
+
+module.exports = {
+    personalaccesstoken
+};

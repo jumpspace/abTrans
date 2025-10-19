@@ -1,10 +1,12 @@
 // Copy address book entry from one Maximizer database to another
 const fs = require('fs/promises');
+const sourcePat = require('./maxsourcetoken.js');
+const targetPat = require('./maxtargettoken.js');
 
 const BASEURL = "https://api.maximizer.com/octopus";
 const CONTENT_TYPE = "application/json; charset=utf-8";
-const SOURCE_PAT = "0";
-const TARGET_PAT = "0";
+const SOURCE_PAT = sourcePat.personalaccesstoken;
+const TARGET_PAT = targetPat.personalaccesstoken;
 const SOURCE_AUTH = `Bearer ${SOURCE_PAT}`;
 const TARGET_AUTH = `Bearer ${TARGET_PAT}`;
 const SOURCE_METHOD = `${BASEURL}/Read`;
@@ -15,18 +17,20 @@ function buildSearchRequest(abEntry) {
     abEntry.Compatibility.AbEntryKey = "2.0"
     abEntry.Configuration = {};
     abEntry.Configuration.Drivers = {};
-    abEntry.getAbEntry.Configuration.Drivers.IAbEntrySearcher = "Maximizer.Model.Access.Sql.AbEntrySearcher";
+    abEntry.Configuration.Drivers.IAbEntrySearcher = "Maximizer.Model.Access.Sql.AbEntrySearcher";
 
     abEntry.AbEntry = {};
     abEntry.AbEntry.Criteria = {};
     abEntry.AbEntry.Criteria.SearchQuery = {};
     abEntry.AbEntry.Criteria.SearchQuery.Key = "*";
-    abEntry.Scope = {};
+    abEntry.AbEntry.Scope = {};
     abEntry.AbEntry.Scope.Fields = {};
     abEntry.AbEntry.Scope.Fields.Name = 1;
+
+    return abEntry;
 }
 
-async function getUdfList(abEntry) {
+async function getCompIndUdfList(abEntry) {
     const udfList = {
         "Schema": {
             "Criteria": {
@@ -87,5 +91,5 @@ async function getUdfList(abEntry) {
 }
 
 let abEntry = {};
-buildSearchRequest(abEntry);
-getUdfList(abEntry).then(console.log(abEntry));
+abEntry = buildSearchRequest(abEntry);
+getCompIndUdfList(abEntry).then(console.log(JSON.stringify(abEntry)));
