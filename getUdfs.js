@@ -31,7 +31,8 @@ async function getUdfs() {
             },
             "Scope": {
                 "Fields": {
-                    "Key": 1
+                    "Key": 1,
+                    "Alias": 1
                 }
             }
         },
@@ -70,8 +71,10 @@ async function getUdfs() {
         if (res.Code == 0) { 
             resList = res.Schema.Data;
             resList.forEach((field) => {
-                udfType = field.Key;
-                udfList.push(udfType.substring(KEY_START));
+                //udfType = field.Key;
+                //udfList.push(udfType.substring(KEY_START));
+                udfType = field.Alias[1];
+                udfList.push(udfType);
             });
 
             udfList.forEach((fieldName) => { getAbEntry.AbEntry.Scope.Fields[fieldName] = 1; });

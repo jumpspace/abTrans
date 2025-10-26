@@ -22,7 +22,8 @@ function buildSearchRequest(abEntry) {
     abEntry.AbEntry = {};
     abEntry.AbEntry.Criteria = {};
     abEntry.AbEntry.Criteria.SearchQuery = {};
-    abEntry.AbEntry.Criteria.SearchQuery.Key = "*";
+    abEntry.AbEntry.Criteria.SearchQuery.Type = {};
+    abEntry.AbEntry.Criteria.SearchQuery.Type.$EQ = "Company";
     abEntry.AbEntry.Scope = {};
     abEntry.AbEntry.Scope.Fields = {};
     abEntry.AbEntry.Scope.Fields.Name = 1;
@@ -86,7 +87,60 @@ async function getCompIndUdfList(abEntry) {
         } else { console.log("<getUdfs/Response> " + res.Msg[0]); }
     }
     catch (error) {
-        console.error("<getUdfs/Fetch> Error: " + error)
+        console.error("<getUdfs/Fetch> Error: " + error);
+    }
+}
+
+async function getNotesList(abEntry) {
+    const notesList = {
+        "Configuration": {
+            "Drivers": {
+                "INoteSearcher": "Maximizer.Model.Access.Sql.NoteSearcher"
+            }
+        },
+        "Compatibility": {
+            "NoiteKey": "2.0"
+        },
+        "Note": {
+            "Criteria": {
+                "SearchQuery": {
+                    "ParentKey": {
+                        "$EQ": abEntry.Key
+                    }
+                }
+            },
+            "Scope": {
+                "Fields": {
+                    "Key": 1,
+                    "Text": 1,
+                    "RichText": 1,
+                    "Category": 1,
+                    "Important": 1,
+                    "Type": 1,
+                    "Creator": 1,
+                    "DateTime": 1,
+                    "SecAccess/Write": 1,
+                    "SecAccess/Read": 1
+                }
+            }
+        }
+
+    };
+    
+    const notesListConnectOptions = {
+        method: 'POST',
+        redirect: 'follow',
+        headers: { 'Authorization': TARGET_AUTH, 'Content-Type': CONTENT_TYPE },
+        body: JSON.stringify(notesList)
+    };
+
+    try {
+        const response = await fetch(TARGET_METHOD, notesListConnectOptions);
+        const res = await response.json();
+        // process response
+    } 
+    catch (error) {
+        console.error("<getNotesList/Fetch> Error: " + error);
     }
 }
 
