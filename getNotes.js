@@ -1,38 +1,12 @@
-// Copy address book entry from one Maximizer database to another
+// getNotes.js
 const fs = require('fs/promises');
 const sourcePat = require('./maxsourcetoken.js');
-const targetPat = require('./maxtargettoken.js');
-const { getCompanyUdfs, getIndividualUdfs } = require('./getUdfs.js');
 
 const BASEURL = "https://api.maximizer.com/octopus";
 const CONTENT_TYPE = "application/json; charset=utf-8";
-const SOURCE_PAT = sourcePat.personalaccesstoken;
-const TARGET_PAT = targetPat.personalaccesstoken;
-const SOURCE_AUTH = `Bearer ${SOURCE_PAT}`;
+const TARGET_PAT = sourcePat.personalaccesstoken;
 const TARGET_AUTH = `Bearer ${TARGET_PAT}`;
-const SOURCE_METHOD = `${BASEURL}/Read`;
-const TARGET_METHOD = `${BASEURL}/Create`;
-
-function buildSearchRequest(abEntry) {
-    abEntry.Compatibility = {};
-    abEntry.Compatibility.AbEntryKey = "2.0"
-    abEntry.Configuration = {};
-    abEntry.Configuration.Drivers = {};
-    abEntry.Configuration.Drivers.IAbEntrySearcher = "Maximizer.Model.Access.Sql.AbEntrySearcher";
-
-    abEntry.AbEntry = {};
-    abEntry.AbEntry.Criteria = {};
-    abEntry.AbEntry.Criteria.SearchQuery = {};
-    abEntry.AbEntry.Criteria.SearchQuery.Type = {};
-    abEntry.AbEntry.Criteria.SearchQuery.Type.$EQ = "Company";
-    abEntry.AbEntry.Scope = {};
-    abEntry.AbEntry.Scope.Fields = {};
-    abEntry.AbEntry.Scope.Fields.Name = 1;
-
-    return abEntry;
-}
-
-
+const TARGET_METHOD = `${BASEURL}/Read`;
 
 async function getNotesList(abEntry) {
     const notesList = {
@@ -80,13 +54,13 @@ async function getNotesList(abEntry) {
     try {
         const response = await fetch(TARGET_METHOD, notesListConnectOptions);
         const res = await response.json();
+        
         // process response
+        
+        return abEntry;
+
     } 
     catch (error) {
         console.error("<getNotesList/Fetch> Error: " + error);
     }
 }
-
-let abEntry = {};
-abEntry = buildSearchRequest(abEntry);
-getCompanyUdfs(abEntry).then(console.log(JSON.stringify(abEntry)));
