@@ -43,7 +43,7 @@ async function getNotesList(abEntry) {
         }
 
     };
-    
+
     const notesListConnectOptions = {
         method: 'POST',
         redirect: 'follow',
@@ -54,13 +54,15 @@ async function getNotesList(abEntry) {
     try {
         const response = await fetch(TARGET_METHOD, notesListConnectOptions);
         const res = await response.json();
-        
+
         // process response
-        
+
         return abEntry;
 
-    } 
+    }
     catch (error) {
         console.error("<getNotesList/Fetch> Error: " + error);
     }
 }
+
+module.exports = { getNotesList };

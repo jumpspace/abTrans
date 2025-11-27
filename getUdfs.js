@@ -9,7 +9,7 @@ const TARGET_AUTH = `Bearer ${TARGET_PAT}`;
 const TARGET_METHOD = `${BASEURL}/Read`;
 
 
-async function getCompanyUdfs() {
+async function getCompanyUdfs(abEntry) {
     let resList = [];
     let udfList = [];
 
@@ -48,26 +48,11 @@ async function getCompanyUdfs() {
         body: JSON.stringify(dstRequest) 
     };
 
-    // set up request with Company UDFs
-        const getAbEntry = {};
-        getAbEntry.Compatibility = {};
-        getAbEntry.Compatibility.AbEntryKey = "2.0"
-        getAbEntry.Configuration = {};
-        getAbEntry.Configuration.Drivers = {};
-        getAbEntry.Configuration.Drivers.IAbEntrySearcher = "Maximizer.Model.Access.Sql.AbEntrySearcher";
-        getAbEntry.AbEntry = {};
-        getAbEntry.AbEntry.Criteria = {};
-        getAbEntry.AbEntry.Criteria.SearchQuery = {};
-        getAbEntry.AbEntry.Criteria.SearchQuery.Key = "*";
-        getAbEntry.AbEntry.Scope = {};
-        getAbEntry.AbEntry.Scope.Fields = {};
-        getAbEntry.AbEntry.Scope.Fields.Name = 1;
-
     try {
         const response = await fetch(TARGET_METHOD, targetConnectOptions);
         const res = await response.json();
         let udfType = "";
-        const KEY_START = 9; // index to start substring: Udf/$TYPEID(XXX)
+        //const KEY_START = 9; // index to start substring: Udf/$TYPEID(XXX)
         if (res.Code == 0) { 
             resList = res.Schema.Data;
             resList.forEach((field) => {
@@ -87,7 +72,7 @@ async function getCompanyUdfs() {
 }
 
 
-async function getIndividualUdfs() {
+async function getIndividualUdfs(abEntry) {
     let resList = [];
     let udfList = [];
 
@@ -126,21 +111,6 @@ async function getIndividualUdfs() {
         body: JSON.stringify(dstRequest) 
     };
 
-    // set up request with Individual UDFs
-        const getAbEntry = {};
-        getAbEntry.Compatibility = {};
-        getAbEntry.Compatibility.AbEntryKey = "2.0"
-        getAbEntry.Configuration = {};
-        getAbEntry.Configuration.Drivers = {};
-        getAbEntry.Configuration.Drivers.IAbEntrySearcher = "Maximizer.Model.Access.Sql.AbEntrySearcher";
-        getAbEntry.AbEntry = {};
-        getAbEntry.AbEntry.Criteria = {};
-        getAbEntry.AbEntry.Criteria.SearchQuery = {};
-        getAbEntry.AbEntry.Criteria.SearchQuery.Key = "*";
-        getAbEntry.AbEntry.Scope = {};
-        getAbEntry.AbEntry.Scope.Fields = {};
-        getAbEntry.AbEntry.Scope.Fields.Name = 1;
-
     try {
         const response = await fetch(TARGET_METHOD, targetConnectOptions);
         const res = await response.json();
@@ -151,7 +121,7 @@ async function getIndividualUdfs() {
             resList.forEach((field) => {
                 //udfType = field.Key;
                 //udfList.push(udfType.substring(KEY_START));
-                udfType = field.Alias[1];
+                udfType = field.Alias[1];    // get UDF name instead of Type ID
                 udfList.push(udfType);
             });
 
@@ -164,7 +134,7 @@ async function getIndividualUdfs() {
     }
 }
 
-module.exports = { getCompanyUdfs, getIndividualUdfs };
+//module.exports = { getCompanyUdfs, getIndividualUdfs };
 
-//getUdfs().then((reqAbEntry) => console.log(JSON.stringify(reqAbEntry)))
-//.catch((err) => console.log(err));
+getUdfs().then((reqAbEntry) => console.log(JSON.stringify(reqAbEntry)))
+.catch((err) => console.log(err));

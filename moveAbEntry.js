@@ -3,6 +3,7 @@ const fs = require('fs/promises');
 const sourcePat = require('./maxsourcetoken.js');
 const targetPat = require('./maxtargettoken.js');
 const { getCompanyUdfs, getIndividualUdfs } = require('./getUdfs.js');
+const { getNotesList } = require('./getNotes.js');
 
 const BASEURL = "https://api.maximizer.com/octopus";
 const CONTENT_TYPE = "application/json; charset=utf-8";
@@ -13,7 +14,12 @@ const TARGET_AUTH = `Bearer ${TARGET_PAT}`;
 const SOURCE_METHOD = `${BASEURL}/Read`;
 const TARGET_METHOD = `${BASEURL}/Create`;
 
-function buildSearchRequest(abEntry) {
+function buildSearchRequest(abEntry, type) {
+    // do not build if type is invalid
+    if (type != "Company" && type != "Individual" && type != "Contact") {
+        return abEntry;
+    }
+
     abEntry.Compatibility = {};
     abEntry.Compatibility.AbEntryKey = "2.0"
     abEntry.Configuration = {};
@@ -23,70 +29,21 @@ function buildSearchRequest(abEntry) {
     abEntry.AbEntry = {};
     abEntry.AbEntry.Criteria = {};
     abEntry.AbEntry.Criteria.SearchQuery = {};
-    abEntry.AbEntry.Criteria.SearchQuery.Type = {};
-    abEntry.AbEntry.Criteria.SearchQuery.Type.$EQ = "Company";
+    abEntry.AbEntry.Criteria.SearchQuery.$AND = [{},{}];
+    abEntry.AbEntry.Criteria.SearchQuery.$AND[0].Type = {}
+    abEntry.AbEntry.Criteria.SearchQuery.$AND[0].Type.$EQ = type;
+    abEntry.AbEntry.Criteria.SearchQuery.$AND[1].Name = {};
+    abEntry.AbEntry.Criteria.SearchQuiry.$AND[1].Name.$EQ = "*";
     abEntry.AbEntry.Scope = {};
     abEntry.AbEntry.Scope.Fields = {};
     abEntry.AbEntry.Scope.Fields.Name = 1;
 
-    return abEntry;
-}
-
-
-
-async function getNotesList(abEntry) {
-    const notesList = {
-        "Configuration": {
-            "Drivers": {
-                "INoteSearcher": "Maximizer.Model.Access.Sql.NoteSearcher"
-            }
-        },
-        "Compatibility": {
-            "NoiteKey": "2.0"
-        },
-        "Note": {
-            "Criteria": {
-                "SearchQuery": {
-                    "ParentKey": {
-                        "$EQ": abEntry.Key
-                    }
-                }
-            },
-            "Scope": {
-                "Fields": {
-                    "Key": 1,
-                    "Text": 1,
-                    "RichText": 1,
-                    "Category": 1,
-                    "Important": 1,
-                    "Type": 1,
-                    "Creator": 1,
-                    "DateTime": 1,
-                    "SecAccess/Write": 1,
-                    "SecAccess/Read": 1
-                }
-            }
-        }
-
-    };
-    
-    const notesListConnectOptions = {
-        method: 'POST',
-        redirect: 'follow',
-        headers: { 'Authorization': TARGET_AUTH, 'Content-Type': CONTENT_TYPE },
-        body: JSON.stringify(notesList)
-    };
-
-    try {
-        const response = await fetch(TARGET_METHOD, notesListConnectOptions);
-        const res = await response.json();
-        // process response
-    } 
-    catch (error) {
-        console.error("<getNotesList/Fetch> Error: " + error);
+    if (type == "Individual" || type == "Contact") {
+        abEntry.AbEntry.Scope.Fields.FirstName = 1;
     }
+
+    return abEntry;
 }
 
 let abEntry = {};
 abEntry = buildSearchRequest(abEntry);
-getCompanyUdfs(abEntry).then(console.log(JSON.stringify(abEntry)));
