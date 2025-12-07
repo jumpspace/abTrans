@@ -16,7 +16,7 @@ async function getNotesList(abEntry) {
             }
         },
         "Compatibility": {
-            "NoiteKey": "2.0"
+            "NoteKey": "2.0"
         },
         "Note": {
             "Criteria": {
